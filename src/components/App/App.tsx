@@ -11,18 +11,19 @@ import ImageModal from '../ImageModal/ImageModal';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import NotResultMessage from '../NotResultMessage/NotResultMessage';
+import { IFetchImagesResponse, IImage } from './types';
 
 function App() {
-  const [query, setQuery] = useState('');
-  const [images, setImages] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [notResult, setNotResult] = useState(false);
+  const [query, setQuery] = useState<string>('');
+  const [images, setImages] = useState<IImage[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [notResult, setNotResult] = useState<boolean>(false);
 
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [modalImage, setModalImage] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [modalImage, setModalImage] = useState<string>('');
 
   const notify = () => {
     setError(false);
@@ -30,19 +31,19 @@ function App() {
     toast.error('Enter text to search!!!');
   };
 
-  function openModal(imageUrl) {
+  function openModal(imageUrl: string): void {
     setModalImage(imageUrl);
     setModalIsOpen(true);
   }
 
   useEffect(() => {
     if (query.trim() === '') return;
-    const getImages = async () => {
+    async function getImages(query: string, page: number): Promise<void> {
       try {
         setError(false);
         setNotResult(false);
         setLoading(true);
-        const data = await fetchImages(query, page);
+        const data = await fetchImages<IFetchImagesResponse>(query, page);
         if (data.results.length === 0) return setNotResult(true);
         setImages(prevImages => {
           return [...prevImages, ...data.results];
@@ -54,17 +55,17 @@ function App() {
       } finally {
         setLoading(false);
       }
-    };
-    getImages();
+    }
+    getImages(query, page);
   }, [query, page]);
 
-  const handleSearch = async query => {
+  const handleSearch = (query: string): void => {
     setImages([]);
     setPage(1);
     setQuery(query);
   };
 
-  const onLoadMore = async () => {
+  const onLoadMore = (): void => {
     setPage(prev => prev + 1);
   };
 
@@ -77,11 +78,7 @@ function App() {
         }}
       />
       {images.length > 0 && (
-        <ImageGallery
-          images={images}
-          onImageClick={openModal}
-          // setModalImage={setModalImage}
-        />
+        <ImageGallery images={images} onImageClick={openModal} />
       )}
       {notResult && <NotResultMessage />}
       {error && <ErrorMessage />}

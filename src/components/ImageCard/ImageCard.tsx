@@ -1,6 +1,7 @@
 import css from './ImageCard.module.css';
+import { IImageCardProps } from './types';
 
-export default function ImageCard({ image, onImageClick }) {
+const ImageCard: React.FC<IImageCardProps> = ({ image, onImageClick }) => {
   return (
     <div className={css.item}>
       <img
@@ -18,4 +19,6 @@ export default function ImageCard({ image, onImageClick }) {
       </div>
     </div>
   );
-}
+};
+
+export default ImageCard;

@@ -1,4 +1,5 @@
 import Modal from 'react-modal';
+import { IImageModalProps } from './types';
 
 const customStyles = {
   overlay: {
@@ -18,8 +19,12 @@ const customStyles = {
 };
 Modal.setAppElement('#root');
 
-export default function ImageModal({ isOpen, setModalIsOpen, modalImage }) {
-  function closeModal() {
+const ImageModal: React.FC<IImageModalProps> = ({
+  isOpen,
+  setModalIsOpen,
+  modalImage,
+}) => {
+  function closeModal(): void {
     setModalIsOpen(false);
   }
   return (
@@ -29,4 +34,6 @@ export default function ImageModal({ isOpen, setModalIsOpen, modalImage }) {
       </Modal>
     </div>
   );
-}
+};
+
+export default ImageModal;

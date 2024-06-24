@@ -1,14 +1,18 @@
 import { PiMagnifyingGlassBold } from 'react-icons/pi';
 
 import css from './SearchBar.module.css';
+import { ISearchBarProps } from './types';
+import { FormEvent } from 'react';
 
-export default function SearchBar({ onSubmit, notify }) {
-  const handleSubmit = e => {
+const SearchBar: React.FC<ISearchBarProps> = ({ onSubmit, notify }) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const query = e.target.elements.query.value.toLowerCase().trim();
+    const form = e.target as HTMLFormElement;
+    const queryInput = form.elements.namedItem('query') as HTMLInputElement;
+    const query = queryInput.value.toLowerCase().trim();
     if (query === '') return notify();
     onSubmit(query);
-    e.target.reset();
+    form.reset();
   };
 
   return (
@@ -28,4 +32,6 @@ export default function SearchBar({ onSubmit, notify }) {
       </form>
     </header>
   );
-}
+};
+
+export default SearchBar;
